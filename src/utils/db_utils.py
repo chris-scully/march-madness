@@ -42,7 +42,7 @@ class DB_Utils:
                 , user = self.username
                 , password = self.password
             )
-            print("Connection to PostgreSQL DB successful")
+            # print("Connection to PostgreSQL DB successful")
         except OperationalError as e:
             print(f"The error '{e}' occurred")
 

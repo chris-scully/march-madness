@@ -1,5 +1,5 @@
 # config files
 src/conf/
 
-#pycache files
+# pycache files
 __pycache__/
