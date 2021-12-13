@@ -1,2 +1,5 @@
 # config files
-config.py
+src/conf/
+
+#pycache files
+__pycache__/

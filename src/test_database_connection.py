@@ -1,4 +1,4 @@
-from connect_to_database import connect_to_database
+from utils.db_utils import DB_Utils
 import pandas.io.sql as psql
 
 """
@@ -6,8 +6,7 @@ This is a simple script to test whether or not `connect_to_database.py`
 and `config.py` are working properly.
 """
 
-conn = connect_to_database()
-cursor = conn.cursor()
+db_utils = DB_Utils()
 
 create_table = """
     CREATE TABLE test (
@@ -24,18 +23,20 @@ insert_data = """
     ;
 """
 
+db_utils.sql_execute(create_table)
+db_utils.sql_execute(insert_data)
 
-cursor.execute(create_table)
-cursor.execute(insert_data)
-
-df = psql.read_sql("SELECT * FROM test;", conn)
-print(df.head())
+df = db_utils.sql_read_as_df("SELECT * FROM test;")
+row_count = len(df)
 
 drop_table = """
     DROP TABLE IF EXISTS test;
     ;
 """
 
-cursor.execute(drop_table)
+db_utils.sql_execute(drop_table)
 
-print("Connection successfully configured.")
+if row_count == 1:
+    print("Successfully tested connection.")
+else:
+    print("CONNECTION ERROR")
