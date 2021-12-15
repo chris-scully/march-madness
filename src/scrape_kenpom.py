@@ -11,7 +11,7 @@ current_season = 2022
 # Log-in to kenpom.com
 browser = utils.login(kp_conf["email"], kp_conf["password"])
 
-def load_kenpom_data(tables="all", seasons="all", if_exists="replace", browser=browser):
+def load_kenpom_data(tables="all", seasons="all", if_exists="replace", browser=browser, schema="raw_kenpom"):
     """
     Function to load (or re-load) tables from kenpom.com
 
@@ -69,7 +69,7 @@ def load_kenpom_data(tables="all", seasons="all", if_exists="replace", browser=b
                             data = func(browser=browser, season=season)
                             df = data if table != "teams" else pd.DataFrame(data, columns=["Teams"])
                             sql_table_name = season + "_" + table
-                            db_utils.sql_create_table(df=df, sql_table_name=sql_table_name, if_exists=if_exists)
+                            db_utils.sql_create_table(df=df, sql_table_name=sql_table_name, schema=schema, if_exists=if_exists)
                             # print(f"Successfully pushed table: sql_table_name.")
                         except Exception as e:
                             print(f"ERROR (table: {table}, season: {season}): {str(e)}")
@@ -77,14 +77,9 @@ def load_kenpom_data(tables="all", seasons="all", if_exists="replace", browser=b
                 time.sleep(sleep_time)
                 try:
                     df = func(browser=browser)
-                    db_utils.sql_create_table(df=df, sql_table_name=table, if_exists=if_exists)
+                    db_utils.sql_create_table(df=df, sql_table_name=table, schema=schema, if_exists=if_exists)
                     # print(f"Successfully pushed table: table.")
                 except Exception as e:
                     print(f"ERROR (table: {table}, season: {season}): {str(e)}")
 
     return None
-
-# TODO: following errors with this script:
-# teams:'list' object has no attribute 'to_sql' (maybe fixed?)
-# player_stats: Length mismatch: Expected axis has 4 elements, new values have 7 elements (only in 2004-2006)
-# remove yearly tables from postgres for tables that shouldn't have a year

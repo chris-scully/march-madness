@@ -29,7 +29,7 @@ tables_metadata = {
     }, "player_stats": {
         "func": summary.get_playerstats
         , "changes_yearly": True
-        , "first_season": 2004
+        , "first_season": 2007 # scraper is broken for this <2007
         , "exclude_from_load_all": False
     }, "kpoy": {
         "func": summary.get_kpoy
