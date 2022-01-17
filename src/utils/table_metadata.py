@@ -1,83 +1,90 @@
-from kenpompy import utils, summary, team, misc
+from kenpompy import utils as kenpompy_utils, \
+                    summary as kenpompy_summary, \
+                    team as kenpompy_team, \
+                    misc as kenpompy_misc
+"""
+We renamed the above imports to avoid clashing with other 
+usages of the variable "team" throughout the project.
+"""
 
-tables_metadata = {
+table_metadata = {
     "eff_stats": {
-        "func": summary.get_efficiency
+        "func": kenpompy_summary.get_efficiency
         , "changes_yearly": True
         , "first_season": 2002
         , "exclude_from_load_all": False
     }, "four_factors": {
-        "func": summary.get_fourfactors
+        "func": kenpompy_summary.get_fourfactors
         , "changes_yearly": True
         , "first_season": 2002
         , "exclude_from_load_all": False
     }, "team_stats": {
-        "func": summary.get_teamstats
+        "func": kenpompy_summary.get_teamstats
         , "changes_yearly": True
         , "first_season": 2002
         , "exclude_from_load_all": False
     }, "points_dist": {
-        "func": summary.get_pointdist
+        "func": kenpompy_summary.get_pointdist
         , "changes_yearly": True
         , "first_season": 2002
         , "exclude_from_load_all": False
     }, "height": {
-        "func": summary.get_height
+        "func": kenpompy_summary.get_height
         , "changes_yearly": True
         , "first_season": 2007
         , "exclude_from_load_all": False
     }, "player_stats": {
-        "func": summary.get_playerstats
+        "func": kenpompy_summary.get_playerstats
         , "changes_yearly": True
         , "first_season": 2007 # scraper is broken for this <2007
         , "exclude_from_load_all": False
     }, "kpoy": {
-        "func": summary.get_kpoy
+        "func": kenpompy_summary.get_kpoy
         , "changes_yearly": True
         , "first_season": 2011
         , "exclude_from_load_all": True
     }, "teams": {
-        "func": team.get_valid_teams
+        "func": kenpompy_team.get_valid_teams
         , "changes_yearly": True
         , "first_season": 2002
         , "exclude_from_load_all": False
     }, "schedule": {
-        "func": team.get_schedule
+        "func": kenpompy_team.get_schedule
         , "changes_yearly": True
-        , "first_season": 2002
+        , "first_season": 2011
         , "exclude_from_load_all": True
     }, "ratings": {
-        "func": misc.get_pomeroy_ratings
+        "func": kenpompy_misc.get_pomeroy_ratings
         , "changes_yearly": True
         , "first_season": 2002
         , "exclude_from_load_all": False
     }, "trends": {
-        "func": misc.get_trends
+        "func": kenpompy_misc.get_trends
         , "changes_yearly": False
         , "first_season": 2002
         , "exclude_from_load_all": False
     }, "refs": {
-        "func": misc.get_refs
+        "func": kenpompy_misc.get_refs
         , "changes_yearly": True
         , "first_season": 2016
         , "exclude_from_load_all": False
     }, "home_court_adv": {
-        "func": misc.get_hca
+        "func": kenpompy_misc.get_hca
         , "changes_yearly": False
         , "first_season": 2002
         , "exclude_from_load_all": False
     }, "arenas": {
-        "func": misc.get_arenas
+        "func": kenpompy_misc.get_arenas
         , "changes_yearly": True
         , "first_season": 2010
         , "exclude_from_load_all": False
     }, "game_param": {
-        "func": misc.get_gameattribs
+        "func": kenpompy_misc.get_gameattribs
         , "changes_yearly": True
         , "first_season": 2010
         , "exclude_from_load_all": False
     }, "program_ratings": {
-        "func": misc.get_program_ratings
+        "func": kenpompy_misc.get_program_ratings
         , "changes_yearly": False
         , "first_season": 2002
         , "exclude_from_load_all": False

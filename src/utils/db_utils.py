@@ -29,6 +29,7 @@ class DB_Utils:
         self.database = db_conf["database"]
         self.username = db_conf["username"]
         self.password = db_conf["password"]
+        self.engine = create_engine(f"postgresql://{self.username}:{self.password}@{self.host}:{self.port}/{self.database}")
         self.conn = self._connect_to_database()
         self.cursor = self.conn.cursor()
 
@@ -56,9 +57,8 @@ class DB_Utils:
         df = psql.read_sql(sql_string, self.conn)
         return df
 
-    def sql_create_table(self, df, sql_table_name, schema=None, if_exists="replace", index=False):
-        engine = create_engine(f"postgresql://{self.username}:{self.password}@{self.host}:{self.port}/{self.database}")
-        df.to_sql(sql_table_name, con=engine, schema=schema, if_exists=if_exists, index=index)
+    def sql_create_table(self, df, sql_table_name, save_to_schema=None, if_exists="replace", index=False, dtype=None):
+        df.to_sql(sql_table_name, con=self.engine, schema=save_to_schema, if_exists=if_exists, index=index)
         return None
 
 
