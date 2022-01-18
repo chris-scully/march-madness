@@ -77,7 +77,11 @@ def scrape_kenpom_data(tables="all",
                         time.sleep(sleep_time)
                         try:
                             data = func(browser=browser, season=season)
-                            df = data if table != "teams" else pd.DataFrame(data, columns=["Teams"])
+                            if table != "teams":
+                                df = data
+                            else:
+                                df = pd.DataFrame(data, columns=["Teams"])
+                                df['Teams'] = df['Teams'].str.replace('*', '').str.strip()
                             sql_table_name = season + "_" + table
                             db_utils.sql_create_table(
                                 df=df, 
@@ -195,5 +199,6 @@ def scrape_kenpom_schedules(if_exists="replace",
 
     return None
 
+scrape_kenpom_data()
 scrape_kenpom_schedules()
 
