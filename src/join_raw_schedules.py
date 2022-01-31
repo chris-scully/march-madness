@@ -8,7 +8,7 @@ from sqlalchemy import Integer, Date, Text
 
 browser = utils.login(kp_conf["email"], kp_conf["password"])
 
-def join_raw_schedules(master_output_name=db_conf["raw_schedule_combined_tablename"], 
+def join_raw_schedules(joined_output_name=db_conf["raw_schedule_combined_tablename"], 
                         browser=browser, 
                         load_from_schema=db_conf["raw_kenpom_schedule_schema"],
                         save_to_schema=db_conf["staging_schema"],
@@ -20,7 +20,7 @@ def join_raw_schedules(master_output_name=db_conf["raw_schedule_combined_tablena
     master back to the database.
 
     Args:
-        master_output_name (str): 
+        joined_output_name (str): 
             Name of output table in database.
             Defaults to db_conf["raw_schedule_combined_tablename"].
         browser (optional):
@@ -38,7 +38,8 @@ def join_raw_schedules(master_output_name=db_conf["raw_schedule_combined_tablena
     db_utils = DB_Utils()
 
     all_tables_sql_query = f"""
-        SELECT tablename FROM pg_tables
+        SELECT tablename 
+        FROM pg_tables
         WHERE schemaname = '{load_from_schema}'
         ;
     """
@@ -78,7 +79,7 @@ def join_raw_schedules(master_output_name=db_conf["raw_schedule_combined_tablena
             }
     db_utils.sql_create_table(
                             df=joined_schedules
-                            , sql_table_name=master_output_name
+                            , sql_table_name=joined_output_name
                             , save_to_schema=save_to_schema
                             , if_exists=if_exists
                             , dtype=dtypes
