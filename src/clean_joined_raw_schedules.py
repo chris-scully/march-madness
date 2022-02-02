@@ -56,6 +56,7 @@ def create_master_datasets(joined_input_name=db_conf["raw_schedule_combined_tabl
     full_schedule = pd.concat([joined_schedules, joined_schedules_dup], ignore_index=True)
     
     # TODO: add relevant features for model
+    # TODO: conference adjustments
     print(full_schedule)
 
     return None

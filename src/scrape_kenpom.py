@@ -10,7 +10,7 @@ import pandas as pd
 import numpy as np
 
 current_season = 2022
-sleep_time = 10
+sleep_time = 5
 
 # Log-in to kenpom.com
 browser = utils.login(kp_conf["email"], kp_conf["password"])
@@ -68,28 +68,37 @@ def scrape_kenpom_data(tables="all",
     db_utils = DB_Utils()
     for table in tables_to_update:
         if not table_metadata[table]["exclude_from_load_all"]:
-            func = table_metadata[table]["func"]
             changes_yearly = table_metadata[table]["changes_yearly"]
             if changes_yearly:
-                first_season = table_metadata[table]["first_season"]
                 for season in seasons_to_update:
+                    first_season = table_metadata[table]["first_season"]
                     if int(season) >= first_season:
+                        func = table_metadata[table]["func"]
                         time.sleep(sleep_time)
                         try:
-                            data = func(browser=browser, season=season)
-                            if table != "teams":
-                                df = data
+                            if table != "team_stats":
+                                data = func(browser=browser, season=season)
+                                if table == "teams":
+                                    df = pd.DataFrame(data, columns=["Teams"])
+                                    df['Teams'] = df['Teams'].str.replace('*', '').str.strip()  
+                                else:
+                                    df = data
+                                db_utils.sql_create_table(
+                                    df=df,
+                                    sql_table_name=season + "_" + table, 
+                                    save_to_schema=save_to_schema, 
+                                    if_exists=if_exists
+                                )
                             else:
-                                df = pd.DataFrame(data, columns=["Teams"])
-                                df['Teams'] = df['Teams'].str.replace('*', '').str.strip()
-                            sql_table_name = season + "_" + table
-                            db_utils.sql_create_table(
-                                df=df, 
-                                sql_table_name=sql_table_name, 
-                                save_to_schema=save_to_schema, 
-                                if_exists=if_exists
-                            )
-                            # print(f"Successfully pushed table: sql_table_name.")
+                                off_def = [("off", False), ("def", True)]
+                                for suffix, def_bool in off_def:
+                                    df = func(browser=browser, defense=def_bool, season=season)
+                                    db_utils.sql_create_table(
+                                        df=df,
+                                        sql_table_name=season + "_" + table + "_" + suffix,
+                                        save_to_schema=save_to_schema, 
+                                        if_exists=if_exists
+                                    )
                         except Exception as e:
                             print(f"ERROR (table: {table}, season: {season}): {str(e)}")
             else:
@@ -195,10 +204,6 @@ def scrape_kenpom_schedules(if_exists="replace",
                                 , if_exists=if_exists
                                 , dtype=dtypes
                             )
-        # time.sleep(sleep_time)
+        time.sleep(sleep_time)
 
     return None
-
-scrape_kenpom_data()
-scrape_kenpom_schedules()
-

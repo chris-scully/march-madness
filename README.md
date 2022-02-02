@@ -1,8 +1,8 @@
-# march-madness
+# March Madness Bracket Prediction & Optimization Algorithm
 
 ## KenPom Data Dictionary
 
-### ratings
+### Table: ratings
 **AdjEM**: Adjusted Efficency Margin - Simple subtraction between a team’s offensive and defensive efficiency
 
 **AdjO**: Adjusted offensive efficiency – An estimate of the offensive efficiency (points scored per 100 possessions) a team would have against the average D-I defense.
@@ -17,7 +17,7 @@
 
 **OppD**: Average AdjD of opposing offenses
 
-### eff_stats
+### Table: eff_stats
 **Tempo-Adj** [Duplicate]
 
 **Tempo-Raw**: Possessions per 40 minutes
@@ -34,7 +34,7 @@
 
 **Def. Efficiency-Raw.Rank**: Points allowed per 100 possessions
 
-### four_factors
+### Table: four_factors
 **AdjTempo** [Duplicate]
 
 **AdjOE** [Duplicate]
@@ -57,7 +57,7 @@
 
 **Def-FTRate**: FTA/FGA for the defense
 
-### height
+### Table: height
 **AvgHgt**: Overall average height is computed by taking the average listed height of every player on the team, weighted by minutes played. Players that have played less than 10% of their team’s minutes are not included.
 
 **EffHgt**: Effective height is the average of the center and power forward position. 
@@ -78,7 +78,7 @@
 
 **Continuity**: What percentage of a team’s minutes are played by the same player from last season to this season
 
-### team_stats_off
+### Table: team_stats_off
 **3P%**: 3-point percentage
 
 **2P%**: 2-point percentage
@@ -95,9 +95,24 @@
 
 **AdjOE** [Duplicate]
 
-### team_stats_def
+### Table: team_stats_def
+**3P%**: 3-point percentage against
 
-### points_dist
+**2P%**: 2-point percentage against
+
+**FT%**: free-throw percentage against
+
+**Blk%**: (blocked shots against) / (team's field goal attempts)
+
+**Stl%**: Opposing Steals / Offensive possessions
+
+**A%**: Opposing assists divided by teammates’ made field goals, scaled for playing time
+
+**3PA%**: Percentage of opposing field goals from three-point range
+
+**AdjDE** [Duplicate]
+
+### Table: points_dist
 **Off-FT**: Percentage of offensive points coming from free throws
 
 **Off-2P**: Percentage of offensive points coming from 2-pointers
