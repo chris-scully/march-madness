@@ -3,15 +3,16 @@ from conf.db_conf import db_conf
 from utils.db_utils import DB_Utils
 from kenpompy import utils
 import pandas as pd
+from sqlalchemy import Integer, Float, Text
 
 browser = utils.login(kp_conf["email"], kp_conf["password"])
 
-def create_master_datasets(joined_input_name=db_conf["raw_schedule_combined_tablename"],
+def create_clean_joined_schedule(joined_input_name=db_conf["raw_schedule_combined_tablename"],
                             load_from_schema=db_conf["staging_schema"],
                             browser=browser, 
-                            save_to_schema=db_conf["clean_kenpom_data_schema"],
-                            if_exists="replace",
-                            random_seed = 42
+                            clean_output_name=db_conf["clean_schedule_combined_tablename"],
+                            save_to_schema=db_conf["staging_schema"],
+                            if_exists="replace"
     ):
 
     db_utils = DB_Utils()
@@ -54,11 +55,40 @@ def create_master_datasets(joined_input_name=db_conf["raw_schedule_combined_tabl
     joined_schedules_dup['Outcome'] = 1-joined_schedules_dup['Outcome']
 
     full_schedule = pd.concat([joined_schedules, joined_schedules_dup], ignore_index=True)
+
+    full_schedule.rename(
+        columns={"Season": "Season"
+                    , "Location": "Team A Location"
+                    , "Team": "Team A"
+                    , "Opponent Name": "Team B"
+                    , "Outcome": "Team A Outcome"
+        }
+        , inplace=True
+        , errors="raise"
+    )
+    full_schedule = full_schedule.reindex(
+        columns=[
+            "Season"
+            , "Team A"
+            , "Team B"
+            , "Team A Location"
+            , "Team A Outcome"
+        ]
+    )
     
-    # TODO: add relevant features for model
-    # TODO: conference adjustments
-    print(full_schedule)
+    dtypes = {
+        'Season': Text()
+        , 'Team A': Text()
+        , 'Team B': Text()
+        , 'Team A Location': Float()
+        , 'Team A Outcome': Integer()
+    }
+    db_utils.sql_create_table(
+                            df=full_schedule
+                            , sql_table_name=clean_output_name
+                            , save_to_schema=save_to_schema
+                            , if_exists=if_exists
+                            , dtype=dtypes
+                            )
 
     return None
-
-create_master_datasets()

@@ -196,7 +196,7 @@ def scrape_kenpom_schedules(if_exists="replace",
             , 'Opponent Name': Text()
             , 'Opponent Points': Integer()
             , 'Outcome': Text()
-            }
+        }
         db_utils.sql_create_table(
                                 df=schedule
                                 , sql_table_name = season + "_" + team + "_Schedule" 
