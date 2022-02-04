@@ -34,11 +34,8 @@ def create_clean_joined_schedule(joined_input_name=db_conf["raw_schedule_combine
 
     joined_schedules = db_utils.sql_read_as_df(joined_table_sql_query)
 
-    joined_schedules = joined_schedules[joined_schedules['Outcome'].isin(['W', 'L'])]
-    joined_schedules = joined_schedules[joined_schedules['Location'].isin(['Home','Semi-Home','Neutral','Semi-Away','Away'])]
-
-    joined_schedules['Outcome'].replace({'W':1, 'L':0}, inplace=True)
-    joined_schedules['Location'].replace(
+    joined_schedules['Outcome'].map({'W':1, 'L':0}, inplace=True)
+    joined_schedules['Location'].map(
         {
             'Home': 1.0,
             'Semi-Home': 0.5,
@@ -48,6 +45,7 @@ def create_clean_joined_schedule(joined_input_name=db_conf["raw_schedule_combine
         },
         inplace=True
     )
+    joined_schedules.dropna(subset=["Outcome", "Location"], inplace=True)
 
     joined_schedules_dup = joined_schedules.copy()
     joined_schedules_dup.rename(columns={"Team": "Opponent Name", "Opponent Name": "Team"}, inplace=True)
