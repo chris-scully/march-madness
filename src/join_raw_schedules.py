@@ -20,7 +20,7 @@ def join_raw_schedules(joined_output_name=db_conf["raw_schedule_combined_tablena
     master back to the database.
 
     Args:
-        joined_output_name (str): 
+        joined_output_name (str, optional): 
             Name of output table in database.
             Defaults to db_conf["raw_schedule_combined_tablename"].
         browser (optional):
@@ -32,6 +32,9 @@ def join_raw_schedules(joined_output_name=db_conf["raw_schedule_combined_tablena
         if_exists (str, optional): 
             follows if_exists from https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_sql.html
             Defaults to "replace".
+    
+    Returns:
+        None
     """    
 
     

@@ -14,6 +14,33 @@ def create_clean_joined_schedule(joined_input_name=db_conf["raw_schedule_combine
                             save_to_schema=db_conf["staging_schema"],
                             if_exists="replace"
     ):
+    """
+    Function to take the clean schedule and join relevant features
+    based on year and Team A/B
+
+    Args:
+        joined_input_name (str, optional): 
+            Name of combined raw schedule table
+            Defaults to db_conf["raw_schedule_combined_tablename"].
+        load_from_schema (str, optional):
+            Schema where combined raw schedule table exists
+            Defaults to db_conf["staging_schema"]
+        browser (optional):
+            Should not need to edit this. Uses config kenpom credentials.
+            Defaults to browser.
+        clean_output_name (str, optional):
+            Name of clean joined schedule to output to database
+            Defaults to db_conf["clean_schedule_combined_tablename"]
+        save_to_schema (str, optional):
+            The schema to which the output table is saved
+            Defaults to db_conf["staging_schema"]
+        if_exists (str, optional):
+            Follows if_exists from https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_sql.html
+            Defaults to "replace"
+
+    Returns:
+        None
+    """    
 
     db_utils = DB_Utils()
 
