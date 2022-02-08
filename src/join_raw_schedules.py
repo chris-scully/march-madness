@@ -35,8 +35,7 @@ def join_raw_schedules(joined_output_name=db_conf["raw_schedule_combined_tablena
     
     Returns:
         None
-    """    
-
+    """
     
     db_utils = DB_Utils()
 

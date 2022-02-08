@@ -67,7 +67,8 @@ def scrape_kenpom_data(tables="all",
     # Scraping from KenPom.com and pushing to our PostreSQL DB
     db_utils = DB_Utils()
     for table in tables_to_update:
-        if not table_metadata[table]["exclude_from_load_all"]:
+        if table_metadata[table]["include_in_load_all"]:
+            func = table_metadata[table]["func"]
             changes_yearly = table_metadata[table]["changes_yearly"]
             if changes_yearly:
                 for season in seasons_to_update:
@@ -207,3 +208,5 @@ def scrape_kenpom_schedules(if_exists="replace",
         time.sleep(sleep_time)
 
     return None
+
+scrape_kenpom_data(tables=["home_court_adv", "program_ratings", "trends"])
