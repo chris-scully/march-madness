@@ -103,24 +103,24 @@ def create_clean_joined_schedule(browser=browser,
     full_schedule = full_schedule[["Game ID", "Season", "Team", "Opponent Name", "Location", "Outcome"]]
 
     full_schedule.rename(
-        columns={"Game ID": "Game ID"
-                    , "Season": "Season"
-                    , "Team": "Team A"
-                    , "Opponent Name": "Team B"
-                    , "Location": "Team A Location"
-                    , "Outcome": "Team A Outcome"
+        columns={"Game ID": "game_id"
+                    , "Season": "season"
+                    , "Team": "team_a"
+                    , "Opponent Name": "team_b"
+                    , "Location": "team_a_location"
+                    , "Outcome": "team_a_outcome"
         }
         , inplace=True
         , errors="raise"
     )
     
     dtypes = {
-        'Season': Text()
-        , 'Game ID': Text()
-        , 'Team A': Text()
-        , 'Team B': Text()
-        , 'Team A Location': Float()
-        , 'Team A Outcome': Integer()
+        'game_id': Text()
+        , 'season': Text()
+        , 'team_a': Text()
+        , 'team_b': Text()
+        , 'team_a_location': Float()
+        , 'team_a_outcome': Integer()
     }
 
     db_utils.sql_create_table(
