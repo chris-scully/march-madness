@@ -14,7 +14,7 @@ def create_clean_joined_schedule(browser=browser,
                             clean_output_name=db_conf["clean_schedule_combined_tablename"],
                             save_to_schema=db_conf["staging_schema"],
                             if_exists="replace"
-    ):
+):
     """
     Function to take the clean schedule and join relevant features
     based on year and Team A/B
@@ -56,10 +56,10 @@ def create_clean_joined_schedule(browser=browser,
     raw_schedule_cols_str = '", "'.join(raw_schedule_cols_list)
 
     joined_table_sql_query = f"""
-            SELECT "{raw_schedule_cols_str}"
-            FROM {load_from_schema}.{joined_input_name}
-            ;
-        """
+        SELECT "{raw_schedule_cols_str}"
+        FROM {load_from_schema}.{joined_input_name}
+        ;
+    """
 
     full_schedule = db_utils.sql_read_as_df(joined_table_sql_query)
 
