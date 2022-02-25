@@ -13,6 +13,7 @@ def create_clean_joined_schedule(browser=browser,
                             load_from_schema=db_conf["staging_schema"],
                             clean_output_name=db_conf["clean_schedule_combined_tablename"],
                             save_to_schema=db_conf["staging_schema"],
+                            raw_data_schema=db_conf["raw_kenpom_data_schema"],
                             if_exists="replace"
 ):
     """
@@ -45,6 +46,13 @@ def create_clean_joined_schedule(browser=browser,
 
     db_utils = DB_Utils()
 
+    ####################################################
+    #                                                  #
+    #                   Load Tables                    #
+    #                                                  #
+    ####################################################
+
+    # full schedule
     raw_schedule_cols_list = [
         "Season"
         , "Date"
@@ -62,6 +70,40 @@ def create_clean_joined_schedule(browser=browser,
     """
 
     full_schedule = db_utils.sql_read_as_df(joined_table_sql_query)
+
+    # acceptable team list
+    seasons_list = sorted(full_schedule["Season"].unique())
+    full_teams_df = pd.DataFrame(columns=["Season", "Teams"])
+    for season in seasons_list:
+        table_name = season + "_teams"
+        teams_sql_query = f"""
+            SELECT "Teams"
+            FROM {raw_data_schema}."{table_name}"
+            ;
+        """
+        teams_df = db_utils.sql_read_as_df(teams_sql_query)
+        teams_df["Season"] = season
+        full_teams_df = pd.concat([full_teams_df, teams_df])
+
+    ####################################################
+    #                                                  #
+    #             Performing Cleansing                 #
+    #                                                  #
+    ####################################################
+
+    full_schedule = full_schedule.merge(right=full_teams_df
+                                        , how="inner"
+                                        , left_on=["Season", "Team"]
+                                        , right_on=["Season", "Teams"]
+                                        , suffixes=("", "_tmp1")
+                                        , validate="many_to_one"
+                                ).merge(right=full_teams_df
+                                        , how="inner"
+                                        , left_on=["Season", "Opponent Name"]
+                                        , right_on=["Season", "Teams"]
+                                        , suffixes=("", "_tmp2")
+                                        , validate="many_to_one"
+                                )[raw_schedule_cols_list]
 
     full_schedule['Outcome'] = full_schedule['Outcome'].map({'W':1, 'L':0})
     full_schedule['Location'] = full_schedule['Location'].map(
@@ -113,6 +155,12 @@ def create_clean_joined_schedule(browser=browser,
         , inplace=True
         , errors="raise"
     )
+
+    ####################################################
+    #                                                  #
+    #             Push Table Back to DB                #
+    #                                                  #
+    ####################################################
     
     dtypes = {
         'game_id': Text()
@@ -131,11 +179,10 @@ def create_clean_joined_schedule(browser=browser,
                             , dtype=dtypes
                             )
 
-    # TODO: filter to only teams in Teams table
-    # TODO: consider scheduling biases
-    # TODO: rename column names to remove spaces and eliminate multiple renamings
-    # TODO: build in read sql as datatypes (which will reduce reliance on to_datetime here)
-
     return None
+
+# TODO: filter to only teams in Teams table
+# TODO: rename column names to remove spaces and eliminate multiple renamings
+# TODO: build in read sql as datatypes (which will reduce reliance on to_datetime here)
 
 create_clean_joined_schedule()
